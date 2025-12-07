@@ -14,12 +14,12 @@ Este projeto contém o flow do Node-RED para o Catálogo de Corretoras, incluind
 
 ## Como usar
 
-1. **Clonar o repositório
+1. **Clonar o repositório**
 
 ```git clone https://github.com/PedroHTLemos/Broker-Catalog```
 ```cd Broker-Catalog```
 
-3. Instalar npm
+2. Instalar npm
 ```npm install```
 
 ## Iniciando o Node-RED
@@ -44,4 +44,5 @@ Este projeto contém o flow do Node-RED para o Catálogo de Corretoras, incluind
 
 • Abra uma issue para discutir sugestões ou bugs.
 • Crie uma branch separada para alterações e envie um Pull Request.
+
 
