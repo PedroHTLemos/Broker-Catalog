@@ -1,0 +1,6 @@
+flows_cred.json
+*.db
+*.sqlite
+node_modules/
+.DS_Store
+*.log
