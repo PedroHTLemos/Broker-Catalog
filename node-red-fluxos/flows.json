@@ -1,0 +1,123 @@
+[
+    {
+        "id": "4f1a036ed0346f9e",
+        "type": "tab",
+        "label": "Fluxo 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "ca4e08dbed504c81",
+        "type": "http in",
+        "z": "4f1a036ed0346f9e",
+        "name": "HTTP In /catalogo",
+        "url": "/corretoras",
+        "method": "get",
+        "upload": false,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 210,
+        "y": 140,
+        "wires": [
+            [
+                "6d270e0cb1bb3b5b"
+            ]
+        ]
+    },
+    {
+        "id": "6d270e0cb1bb3b5b",
+        "type": "sqlite",
+        "z": "4f1a036ed0346f9e",
+        "mydb": "41bcda2c2ab32977",
+        "sqlquery": "fixed",
+        "sql": "SELECT nome_comercial, municipio, cnpj FROM tabela_brokers;",
+        "name": "sqlite",
+        "x": 410,
+        "y": 140,
+        "wires": [
+            [
+                "95015d11453be5df"
+            ]
+        ]
+    },
+    {
+        "id": "95015d11453be5df",
+        "type": "function",
+        "z": "4f1a036ed0346f9e",
+        "name": "format Payload",
+        "func": "\nlet corretoras = msg.payload.map(row => ({\n    nome_comercial: row.nome_comercial,\n    municipio: row.municipio,\n    cnpj: row.cnpj\n}));\n\nlet cnpjsVistos = new Set();\nlet corretorasFiltradas = corretoras.filter(item => {\n    if (cnpjsVistos.has(item.cnpj)) {\n        return false; // duplicado, ignora\n    } else {\n        cnpjsVistos.add(item.cnpj);\n        return true; // primeiro registro, mantém\n    }\n});\n\nmsg.payload = corretorasFiltradas;\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 140,
+        "wires": [
+            [
+                "a4a1e0647b3f5cd0",
+                "06c51278f8651b0e"
+            ]
+        ]
+    },
+    {
+        "id": "a4a1e0647b3f5cd0",
+        "type": "http response",
+        "z": "4f1a036ed0346f9e",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 790,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "06c51278f8651b0e",
+        "type": "mqtt out",
+        "z": "4f1a036ed0346f9e",
+        "name": "MQTT Broker",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "broker": "hivemq_broker",
+        "x": 820,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "41bcda2c2ab32977",
+        "type": "sqlitedb",
+        "db": "/home/plemos/.node-red/teste.db",
+        "mode": "RWC"
+    },
+    {
+        "id": "hivemq_broker",
+        "type": "mqtt-broker",
+        "name": "HiveMQ",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "ea889809ef7bcaa9",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-sqlite": "1.1.1"
+        }
+    }
+]
